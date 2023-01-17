@@ -1,0 +1,51 @@
+<%- include('header') -%>
+<%- include('sidebar') -%>
+<div>
+    <h1><%= title %></h1>
+        <ul>
+            <% switch(keyword) {
+                case "region": %>
+                    <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
+                        Read and post the latest classified ads in your area.
+                        We are currently based in Los Angeles--coming soon to a city near you.
+                    </p>
+                    <% if (region_list != "") {
+                        region_list.forEach(region => { %>
+                            <li>
+                                <a href= <%=region.url %>> <%= region.name %> </a>
+                            </li>
+                        <% })
+                    }
+                    break;
+                case "section":
+                    if (section_list != "") {
+                        section_list.forEach(section => { %>
+                            <li>
+                                <a href= "<%=current_url + section.url %>"> <%= section.name %> </a>
+                            </li>
+                        <% })
+                    }
+                    break;
+                case "category":
+                    if (category_list != "") {
+                        category_list.forEach(cat => { %>
+                            <li>
+                                <a href= "<%= current_url + cat.url %>"> <%= cat.name %> </a>
+                            </li>
+                        <% })
+                    }
+                    break;
+                case "posting":
+                    if (posting_list != "") {
+                        posting_list.forEach(posting => { %>
+                            <li>
+                                <a href= "<%= posting.section[0].url + cat.url %>"> <%= cat.name %> </a>
+                            </li>
+                        <% })
+                    }
+                    break;
+            } %>
+        
+        </ul>
+</div>
+<%- include('footer') -%>
