@@ -1,0 +1,243 @@
+<%- include('./partials/header') -%>
+<%- include('./partials/sidebar') -%>
+<div>
+  <h1><%= title %></h1>
+        <% switch(keyword) { 
+            case "region": %> 
+                <form method="POST" action="">
+                    <div class="form-floating mb-3">
+                        <% if (locals.region) { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="West Los Angeles, South Bay, etc." value = "<%= region.name %>" >
+                        <% } else { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="West Los Angeles, South Bay, etc." value = "" >
+                        <% } %>     
+                        <label for="name" >region (e.g. west los angeles, south bay...)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <% if (locals.region) { %>
+                            <input name = "alias" id="alias" class="form-control" type="text" placeholder="wla, sb, etc." value = "<%= region.alias %>" >
+                        <% } else { %>
+                            <input name = "alias" id="alias" class="form-control" type="text" placeholder="wla, sb, etc." value = "" >
+                        <% } %>
+                        <label for="alias" class="col-form-label">alias (e.g. wla, sb...)</label>
+                    </div>
+                    <% if (locals.region) { %>
+                        <input name="regionid" id="regionid" type="hidden" required="true" value= <%=region._id %> >
+                    <% } %>
+                    <button class="btn btn-outline-primary" type="submit">submit</button>
+                </form>
+                <% if (locals.errors) { %>
+                    <ul class="text-danger error-list">
+                        <% errors.forEach(error => { %>
+                            <li> <%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                <% }
+            break;
+            case "section": %>
+                <form method="POST" action="">
+                    <div class="form-floating mb-3">
+                        <% if (locals.section) { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="placeholder" value = "<%= section.name %>" >
+                        <% } else { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="placeholder" value = "" >
+                        <% } %>     
+                        <label for="name" >section (e.g. for sale, housing...)</label>
+                    </div>
+                    <select class="form-select mb-3" aria-label="Select region" name = "region" id="region" placeholder="Select region" required="true">
+                        <% regions.forEach (region => {
+                            if(locals.section) { 
+                                if (region_selected === region._id.toString()) { %>
+                                    <option value= <%= region._id %> selected = "selected" > <%= region.name %> </option>
+                                <% } else { %>
+                                    <option value= <%= region._id %> > <%= region.name %> </option>
+                                <% }
+                            } else { %>
+                                <option value= <%= region._id %> > <%= region.name %> </option>
+                            <% }
+                        }) %>
+                    </select>
+                    <button class="btn btn-outline-primary" type="submit">Submit</button>
+                </form>
+                <% if (locals.errors) { %>
+                    <ul class="text-danger error-list">
+                        <% errors.forEach(error => { %>
+                            <li> <%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                <% }
+                break;
+            case "category": %>
+                <form method="POST" action="">
+                    <div class="form-floating mb-3">
+                        <% if (locals.category) { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="placeholder" value = "<%= category.name %>" >
+                        <% } else { %>
+                            <input name = "name" id="name" class="form-control" type="text" placeholder="placeholder" value = "" >
+                        <% } %>     
+                        <label for="name" >category (e.g. furniture, antiques...)</label>
+                    </div>
+                    <select class="form-select mb-3" aria-label="Select region" name = "region" id="region" placeholder="Select region" required="true">
+                        <% regions.forEach (region => { %>
+                            <option value= <%= region._id %> > <%= region.name %> </option>
+                        <% }) %>
+                    </select>
+                    <select class="form-select  mb-3" aria-label="Select section" name = "section" id="section" placeholder="Select section" required="true" disabled></select>
+                    <script> 
+                        //create references to DOM objects
+                        const region_select = document.getElementById('region');
+                        const section_select = document.getElementById('section');
+
+                        //convert regions to JS object
+                        var regions = <%- JSON.stringify(regions) %>
+
+                        region_select.addEventListener('click', (e) => {
+                            //remove all previous options
+                            while(section_select.firstChild) {
+                                section_select.removeChild(section_select.firstChild);
+                            };
+                            //get selected region
+                            var region_selected = region_select.value;
+                            
+                            //display section options for that region
+                            section_select.disabled = false;
+                            regions.forEach(region => {
+                                if (region_selected === region._id) {
+                                    region.sections.forEach (section => {
+                                        var opt = document.createElement('option');
+                                        opt.value = section._id;
+                                        opt.innerHTML = section.name;
+                                        section_select.appendChild(opt);
+                                    });
+                                };
+                            });
+                        });
+                    </script>
+                    <button class="btn btn-outline-primary" type="submit">submit</button>
+                </form>
+                <% if (locals.errors) { %>
+                    <ul class="text-danger error-list">
+                        <% errors.forEach(error => { %>
+                            <li> <%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                <% }
+                break;
+            case "posting": %>
+                <form method="POST" action="">
+                    <div class="form-floating mb-3">
+                        <% if (locals.posting) { %>
+                            <input name = "title" id="title" class="form-control" type="text" placeholder="placeholder" value = "<%= posting.title %>" >
+                        <% } else { %>
+                            <input name = "title" id="title" class="form-control" type="text" placeholder="placeholder" value = "" >
+                        <% } %>    
+                        <label for="title" >posting title</label> 
+                    </div>
+                    <div class="form-floating mb-3">
+                        <% if (locals.posting) { %>
+                            <input name = "price" id="price" class="form-control" type="number" placeholder="placeholder" value = "<%= posting.price %>" >
+                        <% } else { %>
+                            <input name = "price" id="price" class="form-control" type="number" placeholder="placeholder" value = "" >
+                        <% } %>    
+                        <label for="price" >price ($)</label> 
+                    </div>
+                    <div class="form-floating mb-3">
+                        <% if (locals.posting) { %>
+                            <input name = "neighborhood" id="neighborhood" class="form-control" type="text" placeholder="placeholder" value = "<%= posting.neighborhood %>" >
+                        <% } else { %>
+                            <input name = "neighborhood" id="neighborhood" class="form-control" type="text" placeholder="placeholder" value = "" >
+                        <% } %>     
+                        <label for="neighborhood" >city or neighborhood</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <% if (locals.posting) { %>
+                            <textarea name = "description" id="description" class="form-control" type="textarea" style="height: 200px" placeholder="placeholder"><%= posting.description %></textarea>
+                        <% } else { %>
+                            <textarea name = "description" id="description" class="form-control" type="textarea" style="height: 200px" placeholder="placeholder"></textarea>
+                        <% } %>    
+                        <label for="description" >description</label>
+                    </div>
+
+                    <select class="form-select mb-3" aria-label="Select region" name = "region" id="region" placeholder="Select region" required="true">
+                        <% regions.forEach (region => { %>
+                            <option value= <%= region._id %> > <%= region.name %> </option>
+                        <% }) %>
+                    </select>
+                    <select class="form-select  mb-3" aria-label="Select section" name = "section" id="section" placeholder="Select section" required="true" disabled></select>
+                    <select class="form-select  mb-3" aria-label="Select category" name = "category" id="category" placeholder="Select category" required="true" disabled></select>
+                    <script> 
+                        //create references to DOM objects
+                        const region_select = document.getElementById('region');
+                        const section_select = document.getElementById('section');
+                        const cat_select = document.getElementById('category');
+
+                        //convert regions to JS object
+                        var regions = <%- JSON.stringify(regions) %>
+
+                        //update section select when region is selected
+                        region_select.addEventListener('click', (e) => {
+                            //remove all previous options
+                            while(section_select.firstChild) {
+                                section_select.removeChild(section_select.firstChild);
+                            };
+                            //get selected region
+                            var region_selected = region_select.value;
+                            
+                            //display section options for that region
+                            section_select.disabled = false;
+                            regions.forEach(region => {
+                                if (region_selected === region._id) {
+                                    region.sections.forEach (section => {
+                                        var opt = document.createElement('option');
+                                        opt.value = section._id;
+                                        opt.innerHTML = section.name;
+                                        section_select.appendChild(opt);
+                                    });
+                                };
+                            });
+                        });
+
+                        //update category select when section is selected
+                        section_select.addEventListener('click', (e) => {
+                            //remove all previous options
+                            while(cat_select.firstChild) {
+                                cat_select.removeChild(cat_select.firstChild);
+                            };
+                            //get selected region and section
+                            var region_selected = region_select.value;
+                            var section_selected = section_select.value;
+                            
+                            //display category options for that secction
+                            cat_select.disabled = false;
+                            regions.forEach(region => {
+                                if (region_selected === region._id) {
+                                    region.sections.forEach (section => {
+                                        if (section_selected === section._id) {
+                                            section.categories.forEach (cat => {
+                                                var opt = document.createElement('option');
+                                                opt.value = cat._id;
+                                                opt.innerHTML = cat.name;
+                                                cat_select.appendChild(opt);
+                                            });
+                                        };
+                                    });
+                                };
+                            });
+                        });
+                    </script>
+                    <button class="btn btn-outline-primary" type="submit">submit</button>
+                </form>
+                <% if (locals.errors) { %>
+                    <ul class="text-danger error-list">
+                        <% errors.forEach(error => { %>
+                            <li> <%= error.msg %> </li>
+                        <% }) %>
+                    </ul>
+                <% }
+                break;
+            default: %>
+                <p></p>
+        <% } %>
+</div>
+
+<%- include('./partials/footer') -%>

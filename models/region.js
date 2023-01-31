@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const RegionSchema = new Schema({
     name: {type: String, required: true, minLength:3, maxLength:100},
     alias: {type: String, required: true, minLength:1, maxLength:3},
+    sections: [{type: Schema.Types.ObjectId, ref: "Section"}],
 })
 
 //virtual for region URL

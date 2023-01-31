@@ -29,9 +29,14 @@ var sections = []
 var categories = []
 var postings = []
 
-function regionCreate(name, alias, cb) {
+function regionCreate(name, alias, sections, cb) {
+  regiondetail = { 
+    name: name,
+    alias: alias,
+  }
+  if (sections != false) regiondetail.sections = sections
 
-  var region = new Region({ name: name, alias: alias });
+  var region = new Region(regiondetail);
        
   region.save(function (err) {
     if (err) {
@@ -44,9 +49,13 @@ function regionCreate(name, alias, cb) {
   });
 }
 
-function sectionCreate(name, region, cb) {
+function sectionCreate(name, categories, cb) {
+  sectiondetail = { 
+    name: name,
+  }
+  if (categories != false) sectiondetail.categories = categories
 
-  var section = new Section({ name: name, region: region});
+  var section = new Section(sectiondetail);
        
   section.save(function (err) {
     if (err) {
@@ -59,9 +68,13 @@ function sectionCreate(name, region, cb) {
   });
 }
 
-function categoryCreate(name, section, cb) {
+function categoryCreate(name, postings, cb) {
+  categorydetail = { 
+    name: name,
+  }
+  if (postings != false) categorydetail.postings = postings
 
-  var category = new Category({ name: name, section: section});
+  var category = new Category(categorydetail);
        
   category.save(function (err) {
     if (err) {
@@ -74,11 +87,10 @@ function categoryCreate(name, section, cb) {
   });
 }
 
-function postingCreate(title, description, price, category, cb) {
+function postingCreate(title, description, price, cb) {
   postingdetail = { 
     title: title,
     description: description,
-    category: category,
   }
   if (price != false) postingdetail.price = price
     
@@ -97,16 +109,16 @@ function postingCreate(title, description, price, category, cb) {
 function createRegions(cb) {
     async.series([
         function(callback) {
-          regionCreate('east los angeles', 'ela', callback);
+          regionCreate('east los angeles', 'ela', sections[0], callback);
         },
         function(callback) {
-          regionCreate('west los angeles', 'wla', callback);
+          regionCreate('west los angeles', 'wla', sections[1], callback);
         },
         function(callback) {
-          regionCreate('san gabriel valley', 'sgv', callback);
+          regionCreate('san gabriel valley', 'sgv', sections.slice(2,4), callback);
         },
         function(callback) {
-          regionCreate('san fernando valley', 'sfv', callback);
+          regionCreate('san fernando valley', 'sfv', sections.slice(4), callback);
         }
         ],
         // optional callback
@@ -115,24 +127,30 @@ function createRegions(cb) {
 
 
 function createSections(cb) {
-    async.parallel([
+    async.series([
         function(callback) {
-          sectionCreate('for sale', regions[0], callback);
+          sectionCreate('for sale', categories[0], callback);
         },
         function(callback) {
-          sectionCreate('for sale', regions[1], callback);
+          sectionCreate('for sale', [categories[2], categories[3]], callback);
         },
         function(callback) {
-          sectionCreate('housing', regions[0], callback);
+          sectionCreate('for sale', false, callback);
         },
         function(callback) {
-          sectionCreate('jobs', regions[0], callback);
+          sectionCreate('housing', categories[4], callback);
         },
         function(callback) {
-          sectionCreate('community', regions[0], callback);
+          sectionCreate('housing', categories.slice(5,-1), callback);
         },
         function(callback) {
-          sectionCreate('for sale', regions[2], callback);
+          sectionCreate('jobs', categories[8], callback);
+        },
+        function(callback) {
+          sectionCreate('community', false, callback);
+        },
+        function(callback) {
+          sectionCreate('for sale', categories[0], callback);
         }
         ],
         // optional callback
@@ -141,27 +159,34 @@ function createSections(cb) {
 
 
 function createCategories(cb) {
-    async.parallel([
+  console.log(postings)
+    async.series([
         function(callback) {
-          categoryCreate('antiques', sections[0], callback)
+          categoryCreate('antiques', postings[0], callback)
         },
         function(callback) {
-          categoryCreate('instruments', sections[0], callback)
+          categoryCreate('antiques', false, callback)
         },
         function(callback) {
-          categoryCreate('furniture', sections[1], callback)
+          categoryCreate('instruments', postings[1], callback)
         },
         function(callback) {
-          categoryCreate('apartments', sections[2], callback)
+          categoryCreate('furniture', false, callback)
         },
         function(callback) {
-          categoryCreate('sublets/temporary', sections[2], callback)
+          categoryCreate('apartments', postings[2], callback)
         },
         function(callback) {
-          categoryCreate('vacation rentals', sections[2], callback)
+          categoryCreate('apartments', postings[2], callback)
         },
         function(callback) {
-          categoryCreate('creative', sections[3], callback)
+          categoryCreate('sublets/temporary', false, callback)
+        },
+        function(callback) {
+          categoryCreate('vacation rentals', false, callback)
+        },
+        function(callback) {
+          categoryCreate('creative', postings[3], callback)
         }
         ],
         // Optional callback
@@ -171,29 +196,30 @@ function createCategories(cb) {
 function createPostings(cb) {
   async.parallel([
       function(callback) {
-        postingCreate('Mid-Century Modern Table', 'MOVING SALE - all items must go by Saturday 1/21', 275, categories[0], callback)
+        postingCreate('Mid-Century Modern Table', 'MOVING SALE - all items must go by Saturday 1/21', 275, callback)
       },
       function(callback) {
-        postingCreate('Moog Grandmother', 'Selling my like new Moog Grandmother. Just not using it as much as I should! $900 obo', 900, categories[1], callback)
+        postingCreate('Moog Grandmother', 'Selling my like new Moog Grandmother. Just not using it as much as I should! $900 obo', 900, callback)
       },
       function(callback) {
-        postingCreate('2b+2ba Mar Vista', 'Must-see 2b+2ba in Mar Vista for rent! Hardwood floors, AC and heating, washer dryer in unit. Open house Sunday 1/22.', 3100, categories[3], callback)
+        postingCreate('2b+2ba Mar Vista', 'Must-see 2b+2ba in Mar Vista for rent! Hardwood floors, AC and heating, washer dryer in unit. Open house Sunday 1/22.', 3100, callback)
       },
       function(callback) {
-        postingCreate('Graphic Designer', 'Seeking a graphic designer to help us design our merch! We are a non-profit organization helping educate the community about pixies. Pay negotiable.', 1500, categories[6], callback)
+        postingCreate('Graphic Designer', 'Seeking a graphic designer to help us design our merch! We are a non-profit organization helping educate the community about pixies. Pay negotiable.', 1500, callback)
       }
       ],
       // Optional callback
       cb);
+      console.log(postings)
 }
 
 
 
 async.series([
-    createRegions,
-    createSections,
+    createPostings,
     createCategories,
-    createPostings
+    createSections,
+    createRegions,    
 ],
 // Optional callback
 function(err, results) {

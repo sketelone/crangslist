@@ -1,51 +1,83 @@
-<%- include('header') -%>
-<%- include('sidebar') -%>
-<div>
+<%- include('./partials/header') -%>
+<%- include('./partials/sidebar') -%>
+
+<div class="main-container">
     <h1><%= title %></h1>
-        <ul>
-            <% switch(keyword) {
-                case "region": %>
-                    <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
-                        Read and post the latest classified ads in your area.
-                        We are currently based in Los Angeles--coming soon to a city near you.
-                    </p>
-                    <% if (region_list != "") {
-                        region_list.forEach(region => { %>
-                            <li>
-                                <a href= <%=region.url %>> <%= region.name %> </a>
-                            </li>
-                        <% })
-                    }
-                    break;
-                case "section":
-                    if (section_list != "") {
-                        section_list.forEach(section => { %>
-                            <li>
-                                <a href= "<%=current_url + section.url %>"> <%= section.name %> </a>
-                            </li>
-                        <% })
-                    }
-                    break;
-                case "category":
-                    if (category_list != "") {
-                        category_list.forEach(cat => { %>
-                            <li>
-                                <a href= "<%= current_url + cat.url %>"> <%= cat.name %> </a>
-                            </li>
-                        <% })
-                    }
-                    break;
-                case "posting":
-                    if (posting_list != "") {
-                        posting_list.forEach(posting => { %>
-                            <li>
-                                <a href= "<%= posting.section[0].url + cat.url %>"> <%= cat.name %> </a>
-                            </li>
-                        <% })
-                    }
-                    break;
-            } %>
-        
-        </ul>
+        <% switch(keyword) {
+            case "region": %>
+                <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
+                    Read and post the latest classified ads in your area.
+                    We are currently based in Los Angeles--coming soon to a city near you.
+                </p>
+                <ul>
+                <% if (region_list != "") {
+                    region_list.forEach(region => { %>
+                        <li>
+                            <a href= <%=region.url %>> <%= region.name %> </a>
+                        </li>
+                    <% })
+                } else { %>
+                    <p>There are no regions yet.</p>
+                <% } %>
+                </ul>
+                <% break;
+            case "section": %>
+                <ul>
+                <% if (section_list != "") {
+                    section_list.forEach(section => { %>
+                        <li>
+                            <a href= "<%=current_url + section.url %>"> <%= section.name %> </a>
+                        </li>
+                    <% })
+                } else { %>
+                    <p>There are no sections in this region yet.</p>
+                <% } %>
+                </ul>
+                <hr/>
+                <a href=<%=current_url + '/update' %>>update region</a>
+                <br>
+                <a href=<%=current_url + '/delete' %>>delete region</a>
+                <% break;
+            case "category": %>
+                <ul>
+                <% if (category_list != "") {
+                    category_list.forEach(cat => { %>
+                        <li>
+                            <a href= "<%= current_url + cat.url %>"> <%= cat.name %> </a>
+                        </li>
+                    <% })
+                } else { %>
+                    <p>There are no categories in this section yet.</p>
+                <% } %>
+                </ul>
+                <hr/>
+                <a href=<%=current_url + '/update' %>>update section</a>
+                <br>
+                <a href=<%=current_url + '/delete' %>>delete section</a>
+                <% break;
+            case "posting": 
+                if (posting_list != "") { %>
+                    
+                    <% posting_list.forEach(posting => { %>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <a href= "<%= current_url + posting.url %>" class="thumbnail"> <%= posting.title %> - <%= posting.date_posted_text %></a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) 
+                } else { %>
+                    <div>
+                        <p>There are no postings in this category yet.</p>
+                    </div>
+                <% } %>
+                <hr/>
+                <a href=<%=current_url + '/update' %>>update category</a>
+                <br>
+                <a href=<%=current_url + '/delete' %>>delete category</a>
+                <% break;
+        } %>
+
 </div>
-<%- include('footer') -%>
+<%- include('./partials/footer') -%>

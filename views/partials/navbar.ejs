@@ -1,0 +1,16 @@
+<div class="navbar">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <% switch(keyword) {
+                case "section": %>
+                    <li class="breadcrumb-item"><a href="/">crangslist</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                    <% break;
+                case "category": %>
+                    <% break;   
+                case "posting": %>
+                    <% break; 
+            } %>
+        </ol>
+    </nav>
+</div>
