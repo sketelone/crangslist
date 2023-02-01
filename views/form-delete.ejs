@@ -1,11 +1,12 @@
 <%- include('./partials/header') -%>
+<%- include('./partials/navbar-crud') -%>
 <%- include('./partials/sidebar') -%>
 <div>
   <h1><%= title %></h1>
         <% switch(keyword) { 
             case "region": %> 
                 <hr/>
-                <p>Do you really want to delete this region? Deleting this region will delete <%= section_count %> section(s) and all associated categories and postings. This action cannot be undone.</p>
+                <p>Do you really want to delete the <em><a href="<%=region.url%>"><%= region.name %></a></em> region? Deleting this region will delete <%= section_count %> section(s) and all associated categories and postings. This action cannot be undone.</p>
                 <form method="POST" action="">
                     <input name="regionid" id="regionid" type="hidden" required="true" value= <%=region._id %> >
                     <button class="btn btn-outline-primary" type="submit">delete</button>
@@ -13,7 +14,7 @@
                 <% break;
             case "section": %>
                 <hr/>
-                <p>Do you really want to delete this section? Deleting this section will delete <%= category_count %> category(s) and all associated postings. This action cannot be undone.</p>
+                <p>Do you really want to delete the <em><a href="<%=region.url+section.url%>"><%= section.name %></a></em> section for <strong><%=region.name %></strong>? Deleting this section will delete <strong><%= category_count %></strong> category(s) and all associated postings. This action cannot be undone.</p>
                 <form method="POST" action="">
                     <input name="sectionid" id="sectionid" type="hidden" required="true" value= <%=section._id %> >
                     <button class="btn btn-outline-primary" type="submit">delete</button>
@@ -21,7 +22,7 @@
                 <% break;
             case "category": %>
                 <hr/>
-                <p>Do you really want to delete this category? Deleting this category will delete <%= posting_count %> posting(s). This action cannot be undone.</p>
+                <p>Do you really want to delete the <em><a href="<%=region.url+section.url+category.url%>"><%= category.name %></a></em> category for the <strong><%=section.name %></strong> section of <strong><%=region.name %></strong>? Deleting this category will delete <strong><%= posting_count %></strong> posting(s). This action cannot be undone.</p>
                 <form method="POST" action="">
                     <input name="categoryid" id="categoryid" type="hidden" required="true" value= <%=category._id %> >
                     <button class="btn btn-outline-primary" type="submit">delete</button>
@@ -29,7 +30,7 @@
                 <% break;
             case "posting": %>
                 <hr/>
-                <p>Do you really want to delete this posting? This action cannot be undone.</p>
+                <p>Do you really want to delete the posting: <em><a href="<%=region.url+section.url+category.url+posting.url%>"><%= posting.title %></a></em>? This action cannot be undone.</p>
                 <form method="POST" action="">
                     <input name="postingid" id="postingid" type="hidden" required="true" value= <%=posting._id %> >
                     <button class="btn btn-outline-primary" type="submit">delete</button>

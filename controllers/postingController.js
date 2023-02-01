@@ -6,101 +6,101 @@ const Region = require("../models/region");
 const async = require("async");
 const {body, validationResult} = require("express-validator");
 const {DateTime} = require("luxon");
-const posting = require("../models/posting");
+const multer = require("multer");
+// const upload = multer({dest: './uploads/'})\
+const storage = multer.memoryStorage();
+const upload = multer({stroage:storage});
 
 //Display list of all postings
 exports.posting_list = (req,res,next) => {
-    async.waterfall(
-        [
-            function (callback) {
-                //find region using alias in URL
-                Region.findOne({alias: req.params.region})
-                .populate("sections")
-                .exec( (err, region) => {
-                    if (err) {
-                        return next(err)
-                    } else {
-                        // console.log("Region:" + region)
-                        //match section using name in URL
-                        var name = req.params.section.replace(/-/g, ' ').replace(/%/g, '/')
-                        region.sections.forEach(section => {
-                            if (section.name == name) {
-                                // console.log("Section:" + section)
-                                callback(null, section._id)
-                            }
-                        })
-                    }
-                }) 
-            },
-            //find all categories in section
-            function (sectionId, callback) {
-                Section.findById(sectionId)
-                .populate("categories")
-                .exec( (err, section) => {
-                    if (err) {
-                        return next(err)
-                    } else {
-                        //match category using name in URL
-                        var name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/')
-                        // console.log(name)
-                        section.categories.forEach(cat => {
-                            // console.log(cat)
-                            if (cat.name == name) {
-                                // console.log("Category:" + cat)
-                                callback(null, cat._id)
-                            }
-                        })
-                    }
-                }) 
-            },
-            //find all postings in category
-            function (categoryId, callback) {
-                Category.findById(categoryId)
-                .populate({path: "postings", options: {sort: {"date":1}}})
-                .exec( (err, category) => {
-                    if (err) {
-                        return next(err)
-                    } else {
-                        // console.log(category.postings.length + " posting(s) found")
-                        callback(null, category)
-                    }
-                }) 
-            },
-        ],
-        function (err, results) {
-            if(err) {
-                return next(err)
-            }
-            // console.log(results)
-            //if no results, return error
-            if (results == null) {
-                err = new Error("No postings found for this category.");
-                return next(err)
-            }
-            res.render("list", {
-                keyword: "posting",
-                title: `${results.name}`,
-                posting_list: results.postings,
-                current_url: req.url,
-            })
+    Region.findOne({alias: req.params.region})
+    .populate({
+        path: "sections", 
+        populate: {
+            path: "categories", 
+            populate: {path: "postings"}
+        },
+    })
+    .exec( (err, result) => {
+        if (err) {
+            return next(err);
         }
-    )
+        //match section using name in URL
+        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const section of result.sections) {
+            if(section.name == name) {
+                var current_section = section;
+            };
+        };
+        //match using name in URL
+        name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const cat of current_section.categories) {
+            if(cat.name == name) {
+                var current_cat = cat;
+            };
+        };
+        //render page
+        res.render("list", {
+            keyword: "posting",
+            title: `${current_cat.name}`,
+            posting_list: current_cat.postings,
+            category: current_cat,
+            section: current_section,
+            region: result,
+        });
+    });
 };
 
 //Display detail page for specific posting
 exports.posting_detail = (req,res,next) => {
-    Posting.findById(req.params.id)
-    .exec(function(err, result) {
-        if (err) {
-            return next(err);
-        }
-        res.render("detail", {
-            keyword: "posting",
-            title: `${result.title} - $${result.price}`,
-            posting: result,
-            current_url: req.url,
-        });
-    })
+    async.parallel(
+        {
+            //find region
+            region(callback) {
+                Region.findOne({alias: req.params.region})
+                .populate({
+                    path: "sections", 
+                    populate: {
+                        path: "categories", 
+                        populate: {path: "postings"}
+                    },
+                })
+                .exec(callback)
+            },
+            //find posting
+            posting(callback) {
+                Posting.findById(req.params.id).exec(callback);
+            }
+        },
+        (err, results) => {
+            if (err) {
+                return next(err);
+            }
+            //match section using name in URL
+            var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+            for (const section of results.region.sections) {
+                if(section.name == name) {
+                    var current_section = section;
+                };
+            };
+            //match using name in URL
+            name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
+            for (const cat of current_section.categories) {
+                if(cat.name == name) {
+                    var current_cat = cat;
+                };
+            };
+            res.render("detail", {
+                keyword: "post-detail",
+                title: `${results.posting.title} - $${results.posting.price}`,
+                posting: results.posting,
+                category: current_cat,
+                section: current_section,
+                region: results.region,
+            });
+
+        },
+    );
 };
 
 //Display posting create for on GET
@@ -124,6 +124,9 @@ exports.posting_create_get  = (req,res,next) => {
 
 //Display posting create on POST
 exports.posting_create_post = [
+    //get photo
+    upload.single('posting-photo'),
+
     //validate user input
     body("title").trim().isLength({min:1}).escape()
     .withMessage("posting title required.")
@@ -149,11 +152,17 @@ exports.posting_create_post = [
             neighborhood: req.body.neighborhood,
             description: req.body.description,
             price: req.body.price,
+            image: {
+                // data: fs.readFileSync(path.join(__dirname + "/uploads/" + req.file.filename)),
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            },
         })
+        // console.log(posting, req.file)
 
         //if errors, redisplay form with user input and errors
         if (!errors.isEmpty()) {
-            console.log("There are errors!")
+            console.log("There are errors!", errors)
             Region.find({}, "name")
             .populate({
                 path: "sections", 
@@ -224,18 +233,53 @@ exports.posting_create_post = [
 
 //Display posting delete for on GET
 exports.posting_delete_get  = (req,res,next) => {
-    {
-        Posting.findById(req.params.id).exec((err, result) => {
+    async.parallel(
+        {
+            //find region
+            region(callback) {
+                Region.findOne({alias: req.params.region})
+                .populate({
+                    path: "sections", 
+                    populate: {
+                        path: "categories", 
+                        populate: {path: "postings"}
+                    },
+                })
+                .exec(callback)
+            },
+            //find posting
+            posting(callback) {
+                Posting.findById(req.params.id).exec(callback);
+            }
+        },
+        (err, results) => {
             if (err) {
                 return next(err);
             }
+            //match section using name in URL
+            var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+            for (const section of results.region.sections) {
+                if(section.name == name) {
+                    var current_section = section;
+                };
+            };
+            //match using name in URL
+            name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
+            for (const cat of current_section.categories) {
+                if(cat.name == name) {
+                    var current_cat = cat;
+                };
+            };
             res.render("form-delete", {
                 keyword: "posting",
-                title: `${result.title}`,
-                posting: result,
+                title: "delete posting",
+                posting: results.posting,
+                category: current_cat,
+                section: current_section,
+                region: results.region,
             })
-        });
-    }
+        },
+    );
 };
 
 //Display posting delete on POST
@@ -355,7 +399,7 @@ exports.posting_update_post = [
                     });
                 };
 
-                //match origina section using name in URL
+                //match original section using name in URL
                 var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
                 for (const section of results.region.sections) {
                     if(section.name == name) {

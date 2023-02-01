@@ -1,5 +1,7 @@
 <%- include('./partials/header') -%>
+<%- include('./partials/navbar') -%>
 <%- include('./partials/sidebar') -%>
+
 
 <div class="main-container">
     <h1><%= title %></h1>
@@ -26,7 +28,7 @@
                 <% if (section_list != "") {
                     section_list.forEach(section => { %>
                         <li>
-                            <a href= "<%=current_url + section.url %>"> <%= section.name %> </a>
+                            <a href= "<%=region.url + section.url %>"> <%= section.name %> </a>
                         </li>
                     <% })
                 } else { %>
@@ -34,16 +36,16 @@
                 <% } %>
                 </ul>
                 <hr/>
-                <a href=<%=current_url + '/update' %>>update region</a>
+                <a href=<%=region.url + '/update' %>>update region</a>
                 <br>
-                <a href=<%=current_url + '/delete' %>>delete region</a>
+                <a href=<%=region.url + '/delete' %>>delete region</a>
                 <% break;
             case "category": %>
                 <ul>
                 <% if (category_list != "") {
                     category_list.forEach(cat => { %>
                         <li>
-                            <a href= "<%= current_url + cat.url %>"> <%= cat.name %> </a>
+                            <a href= "<%= region.url + section.url + cat.url %>"> <%= cat.name %> </a>
                         </li>
                     <% })
                 } else { %>
@@ -51,9 +53,9 @@
                 <% } %>
                 </ul>
                 <hr/>
-                <a href=<%=current_url + '/update' %>>update section</a>
+                <a href=<%=region.url + section.url + '/update' %>>update section</a>
                 <br>
-                <a href=<%=current_url + '/delete' %>>delete section</a>
+                <a href=<%=region.url + section.url + '/delete' %>>delete section</a>
                 <% break;
             case "posting": 
                 if (posting_list != "") { %>
@@ -62,7 +64,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-title">
-                                    <a href= "<%= current_url + posting.url %>" class="thumbnail"> <%= posting.title %> - <%= posting.date_posted_text %></a>
+                                    <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %> - <%= posting.date_posted_text %></a>
                                 </div>
                             </div>
                         </div>
@@ -73,9 +75,9 @@
                     </div>
                 <% } %>
                 <hr/>
-                <a href=<%=current_url + '/update' %>>update category</a>
+                <a href=<%=region.url + section.url + category.url + '/update' %>>update category</a>
                 <br>
-                <a href=<%=current_url + '/delete' %>>delete category</a>
+                <a href=<%=region.url + section.url + category.url + '/delete' %>>delete category</a>
                 <% break;
         } %>
 

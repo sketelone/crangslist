@@ -1,4 +1,5 @@
 <%- include('./partials/header') -%>
+<%- include('./partials/navbar-crud') -%>
 <%- include('./partials/sidebar') -%>
 <div>
   <h1><%= title %></h1>
@@ -71,14 +72,17 @@
                 <% }
                 break;
             case "posting": %>
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <div class="form-floating mb-3">
                         <input name = "title" id="title" class="form-control" type="text" placeholder="placeholder" value = "<%= posting.title %>" >
                         <label for="title" >posting title</label> 
                     </div>
-                    <div class="form-floating mb-3">
-                        <input name = "price" id="price" class="form-control" type="number" placeholder="placeholder" value = "<%= posting.price %>" > 
-                        <label for="price" >price ($)</label> 
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">$</span>
+                        <div class="form-floating">
+                            <input name = "price" id="price" class="form-control" type="number" placeholder="placeholder" value = "<%= posting.price %>" > 
+                            <label for="price" >price</label> 
+                        </div>
                     </div>
                     <div class="form-floating mb-3">
                         <input name = "neighborhood" id="neighborhood" class="form-control" type="text" placeholder="placeholder" value = "<%= posting.neighborhood %>" >   
@@ -155,6 +159,7 @@
                             });
                         });
                     </script>
+                    <input type="file" class="form-control mb-3" name="posting-photo">
                     <button class="btn btn-outline-primary" type="submit">submit</button>
                 </form>
                 <% if (locals.errors) { %>

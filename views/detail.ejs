@@ -1,5 +1,7 @@
 <%- include('./partials/header') -%>
+<%- include('./partials/navbar') -%>
 <%- include('./partials/sidebar') -%>
+
 <div>
     <h2>
         <%= title %>
@@ -10,9 +12,9 @@
     <p><%= posting.description %></p>
     <p>Posted: <%= posting.date_posted_ago %> days ago</p>
     <hr/>
-    <a href=<%=current_url + '/update' %>>update posting</a>
+    <a href=<%=region.url + section.url + category.url + posting.url + '/update' %>>update posting</a>
     <br>
-    <a href=<%=current_url + '/delete' %>>delete posting</a>
+    <a href=<%=region.url + section.url + category.url + posting.url + '/delete' %>>delete posting</a>
 
 </div>
 

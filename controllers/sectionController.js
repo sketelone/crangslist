@@ -24,7 +24,7 @@ exports.section_list = (req,res,next) => {
             keyword: "section",
             title: `${result.name}`,
             section_list: result.sections,
-            current_url: req.url,
+            region: result,
         });
     })
 };
@@ -123,53 +123,33 @@ exports.section_create_post = [
 
 //Display section delete for on GET
 exports.section_delete_get = (req,res,next) => {
-    async.waterfall(
-        [
-            function (callback) {
-                //find region using alias in URL
-                Region.findOne({alias: req.params.region})
-                .populate("sections")
-                .exec( (err, region) => {
-                    if (err) {
-                        return next(err)
-                    } else {
-                        //NOTE: is this else loop necessary?
-                        //match section using name in URL
-                        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/')
-                        region.sections.forEach(section => {
-                            if (section.name == name) {
-                                callback(null, section._id)
-                            }
-                        })
-                    }
-                }) 
-            },
-            //find all categories in section
-            function (sectionId, callback) {
-                Section.findById(sectionId)
-                .populate("categories")
-                .exec( (err, section) => {
-                    if (err) {
-                        return next(err)
-                    } else {
-                        callback(null, section)
-                    }
-                }) 
-            },
-        ],
-        (err, result) => {
-            if (err) {
-                return next(err);
-            }
-            res.render("form-delete", {
-                keyword: "section",
-                title: `${result.name}`,
-                section: result,
-                category_count: result.categories.length,
-            })
-
+    Region.findOne({alias: req.params.region})
+    .populate({
+        path: "sections", 
+        populate: {path: "categories"}
+    })
+    .exec( (err, result) => {
+        if(err) {
+            return next(err)
         }
-    )
+        //match section using name in URL
+        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const section of result.sections) {
+            if(section.name == name) {
+                var current_section = section;
+            };
+        };
+
+        //else render list view
+        res.render("form-delete", {
+            keyword: "section",
+            title: "delete section",
+            category_list: current_section.categories,
+            section: current_section,
+            region: result,
+            category_count: current_section.categories.length,
+        });
+    });
 };
 
 //Display section delete on POST

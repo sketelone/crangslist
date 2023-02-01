@@ -105,7 +105,7 @@ exports.region_delete_get  = (req,res,next) => {
         }
         res.render("form-delete", {
             keyword: "region",
-            title: `${result.name}`,
+            title: "delete region",
             region: result,
             section_count: result.sections.length,
         })
