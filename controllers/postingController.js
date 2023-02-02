@@ -125,7 +125,7 @@ exports.posting_create_get  = (req,res,next) => {
 //Display posting create on POST
 exports.posting_create_post = [
     //get img
-    upload.single('posting-photo'),
+    upload.array('posting-photo', 3),
 
     //validate user input
     body("title").trim().isLength({min:1}).escape()
@@ -153,14 +153,17 @@ exports.posting_create_post = [
             price: req.body.price,
         }
         //if img was provided, use img
-        if (typeof req.file !== 'undefined') {
-            postingdetail.image = {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
+        if (req.files.length > 1) {
+            postingdetail.image = [];
+            for (var i=0; i < req.files.length; i++) {
+                postingdetail.image.push({
+                    data: req.files[i].buffer,
+                    contentType: req.files[i].mimetype,
+                });
             };
         }
         //create new posting
-        const posting = new Posting(postingdetail)
+        const posting = new Posting(postingdetail);
 
         //if errors, redisplay form with user input and errors
         if (!errors.isEmpty()) {
@@ -327,8 +330,8 @@ exports.posting_update_get  = (req,res,next) => {
 
 //Display posting update on POST
 exports.posting_update_post = [
-    //get img
-    upload.single('posting-photo'),
+    //get imgs
+    upload.array('posting-photo', 3),
 
     //validate user input
     body("title").trim().isLength({min:1}).escape()
@@ -378,16 +381,17 @@ exports.posting_update_post = [
                     description: req.body.description,
                     price: req.body.price,
                     date_posted: results.posting.date_posted,
+                    image: results.posting.image,
                     _id: results.posting._id,
                 }
                 //if a new img was provided, use new img, else use old img
-                if (typeof req.file !== 'undefined') {
-                    postingdetail.image = {
-                        data: req.file.buffer,
-                        contentType: req.file.mimetype
+                if (typeof req.files !== 'undefined') {
+                    for (var i=0; i < req.files.length; i++) {
+                        postingdetail.image.push({
+                            data: req.files[i].buffer,
+                            contentType: req.files[i].mimetype,
+                        });
                     };
-                } else {
-                    postingdetail.image = results.posting.image;
                 };
 
                 //create new posting

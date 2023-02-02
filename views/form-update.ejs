@@ -158,15 +158,27 @@
                                 };
                             });
                         });
+
+                        // function deletePhotos() {
+                        //     var posting = <%- JSON.stringify(posting) %>
+                        //     posting.image = [];
+
+                        // }
                     </script>
                     <div class="mb-3">
-                        <% if (posting.image.data != undefined) { %>
-                            <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
-                                class = "img-thumbnail"
-                                width = "100"
-                            />
-                        <% } %>
+                        <% if (posting.image.length > 1) {
+                            posting.image.forEach( img => {  %>
+                                <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
+                                    class = "img-thumbnail"
+                                    width = "100"
+                                    id= ""
+                                />
+                            <% })
+                        } %>
                     </div>
+                    <button class = "btn btn-outline-primary mb-3">delete all photos</button>
+                    <input type="file" class="form-control mb-3" name="posting-photo">
+                    <input type="file" class="form-control mb-3" name="posting-photo">
                     <input type="file" class="form-control mb-3" name="posting-photo">
                     <button class="btn btn-outline-primary" type="submit">submit</button>
                 </form>

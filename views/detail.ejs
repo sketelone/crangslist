@@ -9,19 +9,24 @@
             (<%= posting.neighborhood%>)
         <% } %>
     </h2>
-    <% if (posting.image.data != undefined) { %>
-        <div id="carousel" class="carousel slide carousel-dark" style="max-width:300px">
+    <% if (posting.image.length > 1) { %>
+        <div id="carousel" class="carousel slide carousel-dark">
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
-                        class = "d-block w-100"
-                    />
-                </div>
-                <div class="carousel-item">
-                    <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
-                        class = "d-block w-100"
-                    />
-                </div>
+                <% for (const img of posting.image) {
+                    if (posting.image.indexOf(img) == 0) { %>
+                        <div class="carousel-item active">
+                            <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
+                                class = "d-block w-100"
+                            />
+                        </div>
+                    <% } else { %>
+                        <div class="carousel-item">
+                            <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
+                                class = "d-block w-100"
+                            />
+                        </div>   
+                    <% }                 
+                } %>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

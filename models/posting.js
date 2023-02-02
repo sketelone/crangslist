@@ -11,7 +11,7 @@ const PostingSchema = new Schema({
     price: {type: Number, required: true},
     date_posted: {type: Date, default: Date.now},
     date_updated: {type: Date, default: Date.now},
-    image: {data: Buffer, contentType: String},
+    image: [{data: Buffer, contentType: String}],
 });
 
 //virtual for posting URL
