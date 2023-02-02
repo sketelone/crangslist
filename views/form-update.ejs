@@ -159,6 +159,14 @@
                             });
                         });
                     </script>
+                    <div class="mb-3">
+                        <% if (posting.image.data != undefined) { %>
+                            <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
+                                class = "img-thumbnail"
+                                width = "100"
+                            />
+                        <% } %>
+                    </div>
                     <input type="file" class="form-control mb-3" name="posting-photo">
                     <button class="btn btn-outline-primary" type="submit">submit</button>
                 </form>

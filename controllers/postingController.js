@@ -124,7 +124,7 @@ exports.posting_create_get  = (req,res,next) => {
 
 //Display posting create on POST
 exports.posting_create_post = [
-    //get photo
+    //get img
     upload.single('posting-photo'),
 
     //validate user input
@@ -145,20 +145,22 @@ exports.posting_create_post = [
     (req, res, next) => {
         //extract errors
         const errors = validationResult(req);
-
-        //create new posting
-        const posting = new Posting({
+        
+        var postingdetail = { 
             title: req.body.title,
             neighborhood: req.body.neighborhood,
             description: req.body.description,
             price: req.body.price,
-            image: {
-                // data: fs.readFileSync(path.join(__dirname + "/uploads/" + req.file.filename)),
+        }
+        //if img was provided, use img
+        if (typeof req.file !== 'undefined') {
+            postingdetail.image = {
                 data: req.file.buffer,
                 contentType: req.file.mimetype
-            },
-        })
-        // console.log(posting, req.file)
+            };
+        }
+        //create new posting
+        const posting = new Posting(postingdetail)
 
         //if errors, redisplay form with user input and errors
         if (!errors.isEmpty()) {
@@ -325,6 +327,9 @@ exports.posting_update_get  = (req,res,next) => {
 
 //Display posting update on POST
 exports.posting_update_post = [
+    //get img
+    upload.single('posting-photo'),
+
     //validate user input
     body("title").trim().isLength({min:1}).escape()
     .withMessage("posting title required.")
@@ -366,15 +371,27 @@ exports.posting_update_post = [
                 if (err) {
                     return next(err);
                 }
-                //create new posting
-                const posting = new Posting({
+
+                var postingdetail = { 
                     title: req.body.title,
                     neighborhood: req.body.neighborhood,
                     description: req.body.description,
                     price: req.body.price,
                     date_posted: results.posting.date_posted,
                     _id: results.posting._id,
-                })
+                }
+                //if a new img was provided, use new img, else use old img
+                if (typeof req.file !== 'undefined') {
+                    postingdetail.image = {
+                        data: req.file.buffer,
+                        contentType: req.file.mimetype
+                    };
+                } else {
+                    postingdetail.image = results.posting.image;
+                };
+
+                //create new posting
+                const posting = new Posting(postingdetail);
                 //if errors, redisplay form with user input and errors
                 if (!errors.isEmpty()) {
                     console.log("There are errors!")
@@ -397,81 +414,82 @@ exports.posting_update_post = [
                         });
                         return;
                     });
-                };
-
-                //match original section using name in URL
-                var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
-                for (const section of results.region.sections) {
-                    if(section.name == name) {
-                        var current_section = section;
+                } else {
+                    //match original section using name in URL
+                    var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+                    for (const section of results.region.sections) {
+                        if(section.name == name) {
+                            var current_section = section;
+                        };
                     };
-                };
-                //match category using name in URL
-                name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
-                for (const cat of current_section.categories) {
-                    if(cat.name == name) {
-                        var current_cat = cat;
+                    //match category using name in URL
+                    name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
+                    for (const cat of current_section.categories) {
+                        if(cat.name == name) {
+                            var current_cat = cat;
+                        };
                     };
-                };
 
-                //update posting 
-                Posting.findOneAndUpdate({_id: results.posting._id}, posting, {new: true}, (err, result) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    //check if category has changed
-                    if (current_cat._id.toString() !== req.body.category) {
-                        //remove posting from old category
-                        var index = 0;
-                        var i = 0;
-                        console.log(result._id)
-                        for (const post of current_cat.postings) {
-                            console.log(post._id)
-                            if (post._id.toString() == result._id.toString()) {
-                                index = i;
-                            }
-                            i++;
+                    //update posting 
+                    Posting.findOneAndUpdate({_id: results.posting._id}, posting, {new: true}, (err, result) => {
+                        if (err) {
+                            return next(err);
                         }
-                        current_cat.postings.splice(index,1)
-                        current_cat.save((err) => {
-                            if (err) {
-                                return next(err);
+                        //check if category has changed
+                        if (current_cat._id.toString() !== req.body.category) {
+                            //remove posting from old category
+                            var index = 0;
+                            var i = 0;
+                            // console.log(result._id)
+                            for (const post of current_cat.postings) {
+                                // console.log(post._id)
+                                if (post._id.toString() == result._id.toString()) {
+                                    index = i;
+                                }
+                                i++;
                             }
-                        });
-
-                        //add posting to new category
-                        //find new category
-                        async.parallel(
-                            {
-                                region(callback) {
-                                    Region.findById(req.body.region).exec(callback);
-                                },
-                                section(callback) {
-                                    Section.findById(req.body.section).exec(callback);
-                                },
-                                cat(callback) {
-                                    Category.findById(req.body.category).exec(callback);
-                                },
-                            },
-                            (err, results) => {
+                            current_cat.postings.splice(index,1)
+                            current_cat.save((err) => {
                                 if (err) {
                                     return next(err);
                                 }
-                                //add posting to category
-                                results.cat.postings.push(result);
-                                results.cat.save( (err) => {
+                            });
+
+                            //add posting to new category
+                            //find new category
+                            async.parallel(
+                                {
+                                    region(callback) {
+                                        Region.findById(req.body.region).exec(callback);
+                                    },
+                                    section(callback) {
+                                        Section.findById(req.body.section).exec(callback);
+                                    },
+                                    cat(callback) {
+                                        Category.findById(req.body.category).exec(callback);
+                                    },
+                                },
+                                (err, results) => {
                                     if (err) {
                                         return next(err);
                                     }
-                                });
-                                res.redirect(results.region.url+results.section.url+results.cat.url+result.url)
-                            },
-                        );
-                    } else {
-                        //redirect to posting
-                        res.redirect(results.region.url+current_section.url+current_cat.url+result.url);
-                    };
-                });
+                                    //add posting to category
+                                    results.cat.postings.push(result);
+                                    results.cat.save( (err) => {
+                                        if (err) {
+                                            return next(err);
+                                        }
+                                    });
+                                    res.redirect(results.region.url+results.section.url+results.cat.url+result.url)
+                                },
+                            );
+                        } else {
+                            //redirect to posting
+                            res.redirect(results.region.url+current_section.url+current_cat.url+result.url);
+                        };
+                    });
+
+                };
             },
         );
     },

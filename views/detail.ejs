@@ -9,6 +9,31 @@
             (<%= posting.neighborhood%>)
         <% } %>
     </h2>
+    <% if (posting.image.data != undefined) { %>
+        <div id="carousel" class="carousel slide carousel-dark" style="max-width:300px">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
+                        class = "d-block w-100"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img src="data:image/<%=posting.image.contentType%>;base64,<%= posting.image.data.toString('base64')%>"
+                        class = "d-block w-100"
+                    />
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    <% } %>
+
     <p><%= posting.description %></p>
     <p>Posted: <%= posting.date_posted_ago %> days ago</p>
     <hr/>
