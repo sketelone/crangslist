@@ -140,6 +140,12 @@ exports.posting_create_post = [
     .isAlphanumeric('en-US', {ignore:" -"})
     .withMessage("neighborhood has non-alphanumeric characters."),
     body("description").trim().optional({checkFalsy:true}).escape(),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
+    body("section").trim().isLength({min:1}).escape()
+    .withMessage("you must select a section."),
+    body("category").trim().isLength({min:1}).escape()
+    .withMessage("you must select a category."),
 
     //process request
     (req, res, next) => {
@@ -153,7 +159,7 @@ exports.posting_create_post = [
             price: req.body.price,
         }
         //if img was provided, use img
-        if (req.files.length > 1) {
+        if (req.files.length > 0) {
             postingdetail.image = [];
             for (var i=0; i < req.files.length; i++) {
                 postingdetail.image.push({
@@ -346,6 +352,12 @@ exports.posting_update_post = [
     .isAlphanumeric('en-US', {ignore:" -"})
     .withMessage("neighborhood has non-alphanumeric characters."),
     body("description").trim().optional({checkFalsy:true}).escape(),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
+    body("section").trim().isLength({min:1}).escape()
+    .withMessage("you must select a section."),
+    body("category").trim().isLength({min:1}).escape()
+    .withMessage("you must select a category."),
 
     //process request
     (req, res, next) => {
@@ -384,8 +396,13 @@ exports.posting_update_post = [
                     image: results.posting.image,
                     _id: results.posting._id,
                 }
-                //if a new img was provided, use new img, else use old img
-                if (typeof req.files !== 'undefined') {
+                //if user deleted imgs in form, delete previous imgs
+                console.log(req.body.delete_img)
+                if (req.body.delete_img) {
+                    postingdetail.image = [];
+                }
+                //if a new img was provided, add to previous array
+                if (req.files.length > 0) {
                     for (var i=0; i < req.files.length; i++) {
                         postingdetail.image.push({
                             data: req.files[i].buffer,
@@ -396,6 +413,7 @@ exports.posting_update_post = [
 
                 //create new posting
                 const posting = new Posting(postingdetail);
+
                 //if errors, redisplay form with user input and errors
                 if (!errors.isEmpty()) {
                     console.log("There are errors!")
@@ -419,6 +437,7 @@ exports.posting_update_post = [
                         return;
                     });
                 } else {
+                    console.log("no errors")
                     //match original section using name in URL
                     var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
                     for (const section of results.region.sections) {

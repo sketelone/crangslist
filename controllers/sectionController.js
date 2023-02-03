@@ -54,6 +54,8 @@ exports.section_create_post = [
         //make lowercase
         return val.toLowerCase()
     }),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
 
     //process request
     (req, res, next) => {
@@ -197,6 +199,8 @@ exports.section_update_post = [
         //make lowercase
         return val.toLowerCase()
     }),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
 
     //process request
     (req, res, next) => {

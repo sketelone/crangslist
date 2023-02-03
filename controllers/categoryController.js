@@ -61,6 +61,10 @@ exports.category_create_post = [
         //make lowercase
         return val.toLowerCase()
     }),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
+    body("section").trim().isLength({min:1}).escape()
+    .withMessage("you must select a section."),
 
     //process request
     (req, res, next) => {
@@ -243,6 +247,11 @@ exports.category_update_post = [
         //make lowercase
         return val.toLowerCase()
     }),
+    body("region").trim().isLength({min:1}).escape()
+    .withMessage("you must select a region."),
+    body("section").trim().isLength({min:1}).escape()
+    .withMessage("you must select a section."),
+
 
     //process request
     (req, res, next) => {

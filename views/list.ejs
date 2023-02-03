@@ -59,17 +59,23 @@
                 <% break;
             case "posting": 
                 if (posting_list != "") { %>
-                    
-                    <% posting_list.forEach(posting => { %>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-title">
-                                    <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %> - <%= posting.date_posted_text %></a>
+                    <div class="card-container">
+                        <% posting_list.forEach(posting => { %>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-title">
+                                        <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %> - <%= posting.date_posted_text %></a>
+                                    </div>
+                                    <% if (posting.image.length > 0) { %>
+                                        <img src="data:image/<%=posting.image[0].contentType%>;base64,<%= posting.image[0].data.toString('base64')%>" 
+                                        class="img-thumbnail"
+                                        />
+                                    <% } %>
                                 </div>
                             </div>
-                        </div>
-                    <% }) 
-                } else { %>
+                        <% }) %> 
+                    </div>
+                <% } else { %>
                     <div>
                         <p>There are no postings in this category yet.</p>
                     </div>

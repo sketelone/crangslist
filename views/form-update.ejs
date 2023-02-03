@@ -99,89 +99,92 @@
                     </select>
                     <select class="form-select  mb-3" aria-label="Select section" name = "section" id="section" placeholder="Select section" required="true" disabled></select>
                     <select class="form-select  mb-3" aria-label="Select category" name = "category" id="category" placeholder="Select category" required="true" disabled></select>
-                    <script> 
-                        //create references to DOM objects
-                        const region_select = document.getElementById('region');
-                        const section_select = document.getElementById('section');
-                        const cat_select = document.getElementById('category');
-
-                        //convert regions to JS object
-                        var regions = <%- JSON.stringify(regions) %>
-
-                        //update section select when region is selected
-                        region_select.addEventListener('click', (e) => {
-                            //remove all previous options
-                            while(section_select.firstChild) {
-                                section_select.removeChild(section_select.firstChild);
-                            };
-                            //get selected region
-                            var region_selected = region_select.value;
-                            
-                            //display section options for that region
-                            section_select.disabled = false;
-                            regions.forEach(region => {
-                                if (region_selected === region._id) {
-                                    region.sections.forEach (section => {
-                                        var opt = document.createElement('option');
-                                        opt.value = section._id;
-                                        opt.innerHTML = section.name;
-                                        section_select.appendChild(opt);
-                                    });
-                                };
-                            });
-                        });
-
-                        //update category select when section is selected
-                        section_select.addEventListener('click', (e) => {
-                            //remove all previous options
-                            while(cat_select.firstChild) {
-                                cat_select.removeChild(cat_select.firstChild);
-                            };
-                            //get selected region and section
-                            var region_selected = region_select.value;
-                            var section_selected = section_select.value;
-                            
-                            //display category options for that secction
-                            cat_select.disabled = false;
-                            regions.forEach(region => {
-                                if (region_selected === region._id) {
-                                    region.sections.forEach (section => {
-                                        if (section_selected === section._id) {
-                                            section.categories.forEach (cat => {
-                                                var opt = document.createElement('option');
-                                                opt.value = cat._id;
-                                                opt.innerHTML = cat.name;
-                                                cat_select.appendChild(opt);
-                                            });
-                                        };
-                                    });
-                                };
-                            });
-                        });
-
-                        // function deletePhotos() {
-                        //     var posting = <%- JSON.stringify(posting) %>
-                        //     posting.image = [];
-
-                        // }
-                    </script>
-                    <div class="mb-3">
-                        <% if (posting.image.length > 1) {
+                    <div class="mb-3" id="thumbnail-container">
+                        <% if (posting.image.length > 0) {
                             posting.image.forEach( img => {  %>
                                 <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
                                     class = "img-thumbnail"
                                     width = "100"
-                                    id= ""
                                 />
                             <% })
                         } %>
                     </div>
-                    <button class = "btn btn-outline-primary mb-3">delete all photos</button>
+                    <button class = "btn btn-outline-primary mb-3" type = "button" id = "delete-button">delete all photos</button>
                     <input type="file" class="form-control mb-3" name="posting-photo">
                     <input type="file" class="form-control mb-3" name="posting-photo">
                     <input type="file" class="form-control mb-3" name="posting-photo">
+                    <input name="delete_img" id="delete_img" type="hidden" required="true" value= false >
                     <button class="btn btn-outline-primary" type="submit">submit</button>
                 </form>
+                <script> 
+                    //create references to DOM objects
+                    const region_select = document.getElementById('region');
+                    const section_select = document.getElementById('section');
+                    const cat_select = document.getElementById('category');
+                    const delete_button = document.getElementById('delete-button');
+                    const thumbnails = document.getElementById("thumbnail-container");
+                    const deleteImg = document.getElementById('delete_img');
+
+                    //convert regions to JS object
+                    var regions = <%- JSON.stringify(regions) %>
+
+                    //update section select when region is selected
+                    region_select.addEventListener('click', (e) => {
+                        //remove all previous options
+                        while(section_select.firstChild) {
+                            section_select.removeChild(section_select.firstChild);
+                        };
+                        //get selected region
+                        var region_selected = region_select.value;
+                        
+                        //display section options for that region
+                        section_select.disabled = false;
+                        regions.forEach(region => {
+                            if (region_selected === region._id) {
+                                region.sections.forEach (section => {
+                                    var opt = document.createElement('option');
+                                    opt.value = section._id;
+                                    opt.innerHTML = section.name;
+                                    section_select.appendChild(opt);
+                                });
+                            };
+                        });
+                    });
+
+                    //update category select when section is selected
+                    section_select.addEventListener('click', (e) => {
+                        //remove all previous options
+                        while(cat_select.firstChild) {
+                            cat_select.removeChild(cat_select.firstChild);
+                        };
+                        //get selected region and section
+                        var region_selected = region_select.value;
+                        var section_selected = section_select.value;
+                        
+                        //display category options for that secction
+                        cat_select.disabled = false;
+                        regions.forEach(region => {
+                            if (region_selected === region._id) {
+                                region.sections.forEach (section => {
+                                    if (section_selected === section._id) {
+                                        section.categories.forEach (cat => {
+                                            var opt = document.createElement('option');
+                                            opt.value = cat._id;
+                                            opt.innerHTML = cat.name;
+                                            cat_select.appendChild(opt);
+                                        });
+                                    };
+                                });
+                            };
+                        });
+                    });
+
+                    delete_button.addEventListener('click', (e) => {
+                        deleteImg.value = true;
+                        thumbnails.style.display = "none";
+                        delete_button.style.display = "none";
+                    });
+                </script>
                 <% if (locals.errors) { %>
                     <ul class="text-danger error-list">
                         <% errors.forEach(error => { %>

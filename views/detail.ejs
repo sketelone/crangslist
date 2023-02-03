@@ -9,7 +9,7 @@
             (<%= posting.neighborhood%>)
         <% } %>
     </h2>
-    <% if (posting.image.length > 1) { %>
+    <% if (posting.image.length > 0) { %>
         <div id="carousel" class="carousel slide carousel-dark">
             <div class="carousel-inner">
                 <% for (const img of posting.image) {
