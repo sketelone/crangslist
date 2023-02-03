@@ -39,8 +39,8 @@
         </div>
     <% } %>
 
-    <p><%= posting.description %></p>
-    <p>Posted: <%= posting.date_posted_ago %> days ago</p>
+    <p><%= posting.description_text %></p>
+    <p><%= posting.date_posted_text %></p>
     <hr/>
     <a href=<%=region.url + section.url + category.url + posting.url + '/update' %>>update posting</a>
     <br>

@@ -31,6 +31,16 @@ PostingSchema.virtual("date_posted_ago").get(function() {
     return Math.floor(end.diff(start, 'days').toObject().days);
 })
 
+//virtual for posting descriptions's unescaped summary
+PostingSchema.virtual("description_text").get(function() {
+    var temp = this.description.replace(/&#x27;/g, "'");
+    temp = temp.replace(/&quot;/g, "\"");
+    temp = temp.replace(/&amp;/g, "&");
+    temp = temp.replace(/&lt;/g, "<");
+    temp = temp.replace(/&gt;/g, ">");
+    return temp;
+});
+
 
 //export posting model
 module.exports = mongoose.model("Posting", PostingSchema);
