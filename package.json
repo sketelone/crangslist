@@ -1,0 +1,29 @@
+{
+  "name": "odin-crangslist",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "DEBUG=odin-cranglist:* npm run devstart",
+    "load": "node populatedb 'mongodb+srv://DB_USERNAME:DB_PASSWORD@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority' ",
+    "clear": "node cleardb 'mongodb+srv://DB_USERNAME:DB_PASSWORD@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority' "
+  },
+  "dependencies": {
+    "async": "^3.2.4",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-validator": "^6.14.3",
+    "http-errors": "~1.6.3",
+    "luxon": "^3.2.1",
+    "mongoose": "^6.8.3",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "postcss-cli": "^10.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
