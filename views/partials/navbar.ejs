@@ -1,0 +1,28 @@
+<div class="navbar">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">crangslist</a></li>
+            <% switch(keyword) {
+                case "region": 
+                    break;
+                case "section": %>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                    <% break;
+                case "category": %>
+                    <li class="breadcrumb-item"><a href=<%= region.url %>><%= region.name %></a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                    <% break;   
+                case "posting": %>
+                    <li class="breadcrumb-item"><a href=<%= region.url %>><%= region.name %></a></li>
+                    <li class="breadcrumb-item"><a href=<%= region.url + section.url %>><%= section.name %></a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                    <% break; 
+                case "post-detail": %>
+                <li class="breadcrumb-item"><a href=<%= region.url %>><%= region.name %></a></li>
+                <li class="breadcrumb-item"><a href=<%= region.url + section.url %>><%= section.name %></a></li>
+                <li class="breadcrumb-item"><a href=<%= region.url + section.url + category.url %>><%= category.name %></a></li>
+                <% break; 
+            } %>
+        </ol>
+    </nav>
+</div>

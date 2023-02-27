@@ -1,0 +1,51 @@
+<%- include('./partials/header') -%>
+<%- include('./partials/navbar') -%>
+<%- include('./partials/sidebar') -%>
+
+<div>
+    <h2>
+        <%= title %>
+        <% if (posting.neighborhood) { %>
+            (<%= posting.neighborhood%>)
+        <% } %>
+    </h2>
+    <% if (posting.image.length > 0) { %>
+        <div id="carousel" class="carousel slide carousel-dark">
+            <div class="carousel-inner">
+                <% for (const img of posting.image) {
+                    if (posting.image.indexOf(img) == 0) { %>
+                        <div class="carousel-item active">
+                            <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
+                                class = "d-block w-100"
+                            />
+                        </div>
+                    <% } else { %>
+                        <div class="carousel-item">
+                            <img src="data:image/<%=img.contentType%>;base64,<%= img.data.toString('base64')%>"
+                                class = "d-block w-100"
+                            />
+                        </div>   
+                    <% }                 
+                } %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    <% } %>
+
+    <p><%= posting.description_text %></p>
+    <p><%= posting.date_posted_text %></p>
+    <hr/>
+    <a href=<%=region.url + section.url + category.url + posting.url + '/update' %>>update posting</a>
+    <br>
+    <a href=<%=region.url + section.url + category.url + posting.url + '/delete' %>>delete posting</a>
+
+</div>
+
+<%- include('./partials/footer') -%>
