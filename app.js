@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -11,7 +12,7 @@ var app = express();
 
 //mongoose connection set up
 const mongoose = require("mongoose");
-const mongoDB = "mongodb+srv://DB_USERNAME:DB_PASSWORD@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority";
+const mongoDB = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology:true});
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
