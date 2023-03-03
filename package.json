@@ -6,8 +6,8 @@
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=odin-cranglist:* npm run devstart",
-    "load": "node populatedb 'mongodb+srv://DB_USERNAME:DB_PASSWORD@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority' ",
-    "clear": "node cleardb 'mongodb+srv://DB_USERNAME:DB_PASSWORD@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority' "
+    "load": "node populatedb `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority` ",
+    "clear": "node cleardb `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}0.jt9zdqo.mongodb.net/?retryWrites=true&w=majority` "
   },
   "dependencies": {
     "async": "^3.2.4",
