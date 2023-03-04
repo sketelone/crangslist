@@ -63,22 +63,22 @@
                         <% posting_list.forEach(posting => { %>
                             <div class="card">
                                 <div class="card-img">
-                                    <% if (posting.image.length > 0) { %>
-                                        <a href= "<%= region.url + section.url + category.url + posting.url %>">
+                                    <a href= "<%= region.url + section.url + category.url + posting.url %>">
+                                        <% if (posting.image.length > 0) { %>
                                             <img src="data:image/<%=posting.image[0].contentType%>;base64,<%= posting.image[0].data.toString('base64')%>" 
                                                 class ="card-img-top"
                                             />
-                                        </a>
-                                    <% } %>
+                                        <% } else { %>
+                                            <img src="/img/noimg.jpg"
+                                                class = "card-img-top"
+                                            />
+                                        <% } %>
+                                    </a>
                                 </div>
-
-                                    <div class="card-title">
-                                        <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %></a>
-                                    </div>
-
-                                        <p>Posted: <%= posting.date_posted_ago %> days ago</p>
-
-
+                                <div class="card-title">
+                                    <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %></a>
+                                </div>
+                                <p>Posted: <%= posting.date_posted_ago %> days ago</p>
                             </div>
                         <% }) %> 
                     </div>
