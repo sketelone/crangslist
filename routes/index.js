@@ -63,6 +63,9 @@ router.post('/:region/:section/delete', section_controller.section_delete_post);
 //GET request to see category info
 router.get('/:region/:section/:category', posting_controller.posting_list);
 
+//GET request to search within category
+router.post('/:region/:section/:category/search', posting_controller.posting_search);
+
 //GET request to update category
 router.get('/:region/:section/:category/update', category_controller.category_update_get);
 //POST request to update category

@@ -35,6 +35,12 @@ a {
   margin:0px;
 }
 
+.form-inline {
+  display: grid;
+  grid-template-columns: 0px 1fr 50px;
+  gap: 15px;
+}
+
 .carousel {
   margin: 10px;
   height: 450px;
@@ -52,20 +58,22 @@ a {
   padding: 15px;
   display: grid;
   gap: 15px;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   align-items: center;
+  justify-items: stretch;
 }
 
 .card {
-  width: 350px;
-  height: 350px;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
   justify-content: center;
   align-items: center;
+  box-shadow: 0px 0px 5px rgb(202, 202, 202);
 }
 
 .card-img {
-  width: 250px;
-  height: 250px;
+  width: 75%;
+  height: 75%;
 }
 
 img.icon {

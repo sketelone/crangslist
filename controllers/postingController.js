@@ -51,6 +51,56 @@ exports.posting_list = (req,res,next) => {
     });
 };
 
+//Display list of queried postings
+exports.posting_search = (req,res,next) => {
+    Region.findOne({alias: req.params.region})
+    .populate({
+        path: "sections", 
+        populate: {
+            path: "categories", 
+            populate: {path: "postings"}
+        },
+    })
+    .exec( (err, result) => {
+        if (err) {
+            return next(err);
+        }
+        //match section using name in URL
+        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const section of result.sections) {
+            if(section.name == name) {
+                var current_section = section;
+            };
+        };
+        //match using name in URL
+        name = req.params.category.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const cat of current_section.categories) {
+            if(cat.name == name) {
+                var current_cat = cat;
+            };
+        };
+        //match postings using search term
+        var query = req.body.query.toLowerCase();
+        var posting_list = [];
+        for (const post of current_cat.postings) {
+            if(post.title.toLowerCase().includes(query)) {
+                posting_list.push(post);
+            };
+        };
+        //render page
+        res.render("list", {
+            keyword: "posting",
+            title: `${current_cat.name}`,
+            posting_list: posting_list,
+            category: current_cat,
+            section: current_section,
+            region: result,
+            query: query,
+        });
+    });
+};
+
+
 //Display detail page for specific posting
 exports.posting_detail = (req,res,next) => {
     async.parallel(
