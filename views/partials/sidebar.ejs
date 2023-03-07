@@ -1,12 +1,28 @@
 
 <div class="container-fluid" >
-
-            <ul class="sidebar-nav">
-                <li><a href="/region/create">create new region</a></li>
-                <li><a href="/section/create">create new section</a></li>
-                <li><a href="/category/create">create new category</a></li>
-                <li><a href="/posting/create">create new posting</a></li>
-            </ul>
+    <h4><%= title %></h4>
+    <ul class="sidebar-nav">
+        <li><a href="/region/create">create new region</a></li>
+        <li><a href="/section/create">create new section</a></li>
+        <li><a href="/category/create">create new category</a></li>
+        <li><a href="/posting/create">create new posting</a></li>
+    </ul>
+    <ul class="sidebar-nav">
+        <% switch(keyword) {
+            case "section": %>
+                <li><a href=<%=region.url + '/update' %>>update region</a></li>
+                <li></li><a href=<%=region.url + '/delete' %>>delete region</a></li>
+                <% break;
+            case "category": %>
+                <li><a href=<%=region.url + section.url + '/update' %>>update section</a></li>
+                <li><a href=<%=region.url + section.url + '/delete' %>>delete section</a></li>
+                <% break;
+            case "posting": %>
+                <li><a href=<%=region.url + section.url + category.url + '/update' %>>update category</a></li>
+                <li><a href=<%=region.url + section.url + category.url + '/delete' %>>delete category</a></li>
+                <% break;
+            } %>
+    </ul>
 
 </div>
 

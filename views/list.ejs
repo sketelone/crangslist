@@ -4,7 +4,6 @@
 
 
 <div class="main-container">
-    <h1><%= title %></h1>
         <% switch(keyword) {
             case "region": %>
                 <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
@@ -36,9 +35,6 @@
                 <% } %>
                 </ul>
                 <hr/>
-                <a href=<%=region.url + '/update' %>>update region</a>
-                <br>
-                <a href=<%=region.url + '/delete' %>>delete region</a>
                 <% break;
             case "category": %>
                 <ul>
@@ -53,9 +49,6 @@
                 <% } %>
                 </ul>
                 <hr/>
-                <a href=<%=region.url + section.url + '/update' %>>update section</a>
-                <br>
-                <a href=<%=region.url + section.url + '/delete' %>>delete section</a>
                 <% break;
             case "posting": %>
                 <div class="search">
@@ -106,14 +99,11 @@
                         <% }) %> 
                     </div>
                 <% } else { %>
-                    <div>
-                        <p>No postings found.</p>
+                    <div class="card-container">
+                        <p>no results found.</p>
                     </div>
                 <% } %>
                 <hr/>
-                <a href=<%=region.url + section.url + category.url + '/update' %>>update category</a>
-                <br>
-                <a href=<%=region.url + section.url + category.url + '/delete' %>>delete category</a>
                 <% break;
         } %>
 
