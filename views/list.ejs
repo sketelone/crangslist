@@ -1,9 +1,10 @@
 <%- include('./partials/header') -%>
-<%- include('./partials/navbar') -%>
 <%- include('./partials/sidebar') -%>
 
-
 <div class="main-container">
+    <div class="header link-header greybox">
+        <a href="" ><%= title %><a>
+    </div>
         <% switch(keyword) {
             case "section": %>
                 <ul>
@@ -17,7 +18,6 @@
                     <p>There are no sections in this region yet.</p>
                 <% } %>
                 </ul>
-                <hr/>
                 <% break;
             case "category": %>
                 <ul>
@@ -31,7 +31,6 @@
                     <p>There are no categories in this section yet.</p>
                 <% } %>
                 </ul>
-                <hr/>
                 <% break;
         } %>
 

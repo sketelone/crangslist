@@ -1,9 +1,16 @@
 
 <%- include('./partials/header') -%>
 <%- include('./partials/navbar') -%>
-<%- include('./partials/sidebar') -%>
 
-<div>
+<div class="main">
+    <div class="icon-bar">
+        <button type="button" class="btn btn-outline-primary" onclick="window.location.href='mailto:software@sk-se.com'">reply</button>
+        <div class="icon"><a href=""><i class="bi bi-star"></i></a>favorite</div>
+        <div class="icon"><a href=""><i class="bi bi-flag"></i></i></a>flag</div>
+        <div class="icon"><a href=""><i class="bi bi-share"></i></a>share</div>
+        <text>Posted <%= posting.date_posted_text %></text>
+        <a href="#" onclick="window.print();return false;">print</a>
+    </div>
     <h2>
         <%= title %>
         <% if (posting.neighborhood) { %>
@@ -47,7 +54,7 @@
         </div>
 
     <p><%= posting.description_text %></p>
-    <p><%= posting.date_posted_text %></p>
+    
     <hr/>
     <a href=<%=region.url + section.url + category.url + posting.url + '/update' %>>update posting</a>
     <br>

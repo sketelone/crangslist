@@ -25,33 +25,49 @@ li {
   font-size: 80px;
 }
 
-.main {
-  padding: 50px;
+.greybox {
+  background-color:#eeeeee;
+  border: 2px solid #e6e6e6;
 }
 
-.sidebar-nav {
-  margin-top: 20px;
+.link-header {
+  font-size: 24px;
+}
+
+.main {
+  padding: 50px;
 }
 
 .navbar {
   width: 100%;
   height: 50px;
-  background-color:#eeeeee;
-  border: 2px solid #e6e6e6;
   display: grid;
   grid-template-columns: 52px 1fr;
   align-content: center;
 }
 
 .container-side {
-  background-color:#eeeeee;
-  border: 2px solid #e6e6e6;
   width: 200px;
 }
 
 .main-container {
   padding: 15px;
-  width: calc(100% - 220px);
+  width: calc(100% - 200px);
+}
+
+.icon-bar {
+  display: grid;
+  gap: 30px;
+  grid-template-columns: 100px 50px 50px 50px auto 50px;
+  margin: 20px 0px;
+  place-items: center;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .breadcrumb {
