@@ -2,22 +2,31 @@
 <%- include('./partials/sidebar') -%>
 
 <div class="main-container">
-    <div class="header link-header greybox">
-        <a href="" ><%= title %><a>
+    <div class="header classifieds-header greybox-hor">
+        <a href=""><%= title %></a>
     </div>
+    <div class="classifieds-container">    
         <% switch(keyword) {
-            case "section": %>
-                <ul>
-                <% if (section_list != "") {
-                    section_list.forEach(section => { %>
-                        <li>
-                            <a href= "<%=region.url + section.url %>"> <%= section.name %> </a>
-                        </li>
-                    <% })
-                } else { %>
-                    <p>There are no sections in this region yet.</p>
-                <% } %>
-                </ul>
+            case "section": %>       
+                    <% if (section_list != "") {
+                        section_list.forEach(section => { %>
+                            <div>
+                                <div class="greybox-hor">
+                                    <a href= "<%=region.url + section.url %>"> <%= section.name %> </a>
+                                </div>
+                                <ul class="classifieds">
+                                    <% if (section.categories != []) {
+                                        section.categories.forEach( cat => { %>
+                                            <li><a href="<%=region.url + section.url + cat.url %>"> <%= cat.name %> </a></li>
+                                        <% })
+                                    } %>
+                                </ul>
+                            </div>
+                        <% })
+                    } else { %>
+                        <p>There are no sections in this region yet.</p>
+                    <% } %>
+                
                 <% break;
             case "category": %>
                 <ul>
@@ -33,6 +42,7 @@
                 </ul>
                 <% break;
         } %>
+    </div>
 
 </div>
 <%- include('./partials/footer') -%>

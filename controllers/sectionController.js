@@ -8,7 +8,14 @@ const region = require("../models/region");
 exports.section_list = (req,res,next) => {
     //find region using alias in URL
     Region.findOne({alias: req.params.region})
-    .populate({path: "sections", options: {sort: {"name":1}}})
+    .populate({
+        path: "sections", 
+        options: {sort: {"name":1}}, 
+        populate: {
+            path: "categories", 
+            populate: {path: "postings"}
+        },
+    })
     .exec( (err, result) => {
         if (err) {
             return next(err)

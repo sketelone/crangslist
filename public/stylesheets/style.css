@@ -25,13 +25,40 @@ li {
   font-size: 80px;
 }
 
-.greybox {
+.greybox-hor {
+  padding: 5px 0px;
   background-color:#eeeeee;
-  border: 2px solid #e6e6e6;
+  border-top: 1px solid #cccbcb;
+  border-bottom: 1px solid #bebdbd;
 }
 
-.link-header {
+.greybox-vert {
+  margin: 15px 0px;
+  padding: 5px;
+  background-color:#eeeeee;
+  border-right: 1px solid #cccbcb;
+  border-left: 1px solid #bebdbd;
+}
+
+.classifieds-header {
   font-size: 24px;
+}
+
+.classifieds-container {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  text-align: center;
+}
+
+ul.classifieds {
+  padding: 0px;
+  text-align: left;
+}
+
+ul.classifieds > li {
+  border-bottom: 1px solid #e6e6e6;
 }
 
 .main {
