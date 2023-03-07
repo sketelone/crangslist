@@ -10,17 +10,19 @@
                     Read and post the latest classified ads in your area.
                     We are currently based in Los Angeles--coming soon to a city near you.
                 </p>
-                <ul>
-                <% if (region_list != "") {
-                    region_list.forEach(region => { %>
-                        <li>
+                <div class="link-container">
+                    <div class="link-header">
+                        los angeles
+                    </div>
+                    <% if (region_list != "") {
+                        region_list.forEach(region => { %>
                             <a href= <%=region.url %>> <%= region.name %> </a>
-                        </li>
-                    <% })
-                } else { %>
-                    <p>There are no regions yet.</p>
-                <% } %>
-                </ul>
+                            <hr/>
+                        <% })
+                    } else { %>
+                        <p>There are no regions yet.</p>
+                    <% } %>
+                </div>
                 <% break;
             case "section": %>
                 <ul>

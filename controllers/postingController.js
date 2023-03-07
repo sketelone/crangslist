@@ -40,7 +40,7 @@ exports.posting_list = (req,res,next) => {
             };
         };
         //render page
-        res.render("list", {
+        res.render("list-posting", {
             keyword: "posting",
             title: `${current_cat.name}`,
             posting_list: current_cat.postings,
@@ -88,7 +88,7 @@ exports.posting_search = (req,res,next) => {
             };
         };
         //render page
-        res.render("list", {
+        res.render("list-posting", {
             keyword: "posting",
             title: `${current_cat.name}`,
             posting_list: posting_list,
