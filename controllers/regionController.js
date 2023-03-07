@@ -12,7 +12,7 @@ exports.region_list = (req,res,next) => {
             return next(err)
         }
         //render list view
-        res.render("list", {
+        res.render("index", {
             keyword: "region",
             title: "crangslist",
             region_list: results,

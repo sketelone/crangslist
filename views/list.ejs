@@ -5,25 +5,6 @@
 
 <div class="main-container">
         <% switch(keyword) {
-            case "region": %>
-                <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
-                    Read and post the latest classified ads in your area.
-                    We are currently based in Los Angeles--coming soon to a city near you.
-                </p>
-                <div class="link-container">
-                    <div class="link-header">
-                        los angeles
-                    </div>
-                    <% if (region_list != "") {
-                        region_list.forEach(region => { %>
-                            <a href= <%=region.url %>> <%= region.name %> </a>
-                            <hr/>
-                        <% })
-                    } else { %>
-                        <p>There are no regions yet.</p>
-                    <% } %>
-                </div>
-                <% break;
             case "section": %>
                 <ul>
                 <% if (section_list != "") {
@@ -50,61 +31,6 @@
                     <p>There are no categories in this section yet.</p>
                 <% } %>
                 </ul>
-                <hr/>
-                <% break;
-            case "posting": %>
-                <div class="search">
-                    <form class="form-inline" method="POST" action="">
-                            <label class="sr-only" for="query" ></label>
-                            <% if (locals.query) { %>
-                                <input name = "query" id="query" class="form-control mb-2 mr-sm-2" type="text" value = "<%=query%>" >
-                            <% } else { %>
-                                <input name = "query" id="query" class="form-control mb-2 mr-sm-2" type="text" placeholder="search <%=title%>" value = "" >
-                            <% } %>  
-                            <button class="btn btn-outline-primary mb-2" type="submit"><img src="/img/search.svg"></button>
-                    </form>
-                </div>
-                <% if (posting_list != "") { %>
-                    <script>
-                        //get search bar
-                        const searchBar = document.getElementById("query");
-
-                        //convert URL to JS object
-                        var url = <%- JSON.stringify(region.url + section.url + category.url) %>
-    
-                        //update url
-                        searchBar.addEventListener('click', (e) => {
-                            window.history.pushState('object or string', 'Title', url+'/search')
-                        })
-                    </script>
-                    <div class="card-container">
-                        <% posting_list.forEach(posting => { %>
-                            <div class="card">
-                                <div class="card-img">
-                                    <a href= "<%= region.url + section.url + category.url + posting.url %>">
-                                        <% if (posting.image.length > 0) { %>
-                                            <img src="data:image/<%=posting.image[0].contentType%>;base64,<%= posting.image[0].data.toString('base64')%>" 
-                                                class ="card-img-top"
-                                            />
-                                        <% } else { %>
-                                            <img src="/img/noimg.jpg"
-                                                class = "card-img-top"
-                                            />
-                                        <% } %>
-                                    </a>
-                                </div>
-                                <div class="card-title">
-                                    <a href= "<%= region.url + section.url + category.url + posting.url %>" class="thumbnail"> <%= posting.title %></a>
-                                </div>
-                                <p>Posted: <%= posting.date_posted_ago %> days ago</p>
-                            </div>
-                        <% }) %> 
-                    </div>
-                <% } else { %>
-                    <div class="card-container">
-                        <p>no results found.</p>
-                    </div>
-                <% } %>
                 <hr/>
                 <% break;
         } %>

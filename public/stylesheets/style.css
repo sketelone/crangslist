@@ -7,6 +7,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 a {
@@ -14,19 +15,22 @@ a {
   text-decoration: none;
 }
 
-.detail {
-  display: grid;
-  grid-template-columns: 200px minmax(500px, auto);
-  gap: 20px;
+li {
+  list-style: none;
 }
 
-.list {
+.header {
+  text-align: center;
+  width: 100%;
+  font-size: 80px;
+}
 
+.main {
+  padding: 50px;
 }
 
 .sidebar-nav {
   margin-top: 20px;
-  list-style: none;
 }
 
 .navbar {

@@ -1,11 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<%- include('./partials/header') -%>
+<div class="header">crangslist</div>
+<div class="main">
+  <p>Welcome to <em>crangslist</em>, your friendly neighborhood community board.
+    Read and post the latest classified ads in your area.
+    We are currently based in Los Angeles--coming soon to a city near you.
+  </p>
+  <div class="link-container">
+    <h4>los angeles</h4>
+    <hr />
+    <ul>
+      <% if (region_list != "") {
+          region_list.forEach(region => { %>
+              <li><a href= <%=region.url %>> <%= region.name %> </a></li>
+          <% })
+      } else { %>
+          <p>There are no regions yet.</p>
+      <% } %>
+    </ul>
+  </div>
+</div>
+
+<%- include('./partials/footer') -%>
