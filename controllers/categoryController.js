@@ -67,6 +67,54 @@ exports.category_all = (req,res,next) => {
     });
 };
 
+//Display list of queried postings in category
+exports.category_search = (req,res,next) => {
+    Region.findOne({alias: req.params.region})
+    .populate({
+        path: "sections", 
+        populate: {
+            path: "categories",
+            populate: { path: "postings",}
+        },
+    })
+    .exec( (err, result) => {
+        if(err) {
+            return next(err)
+        }
+        //match section using name in URL
+        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const section of result.sections) {
+            if(section.name == name) {
+                var current_section = section;
+            };
+        };
+
+        //match postings using search term
+        var query = req.body.query.toLowerCase();
+        for (const cat of current_section.categories) {
+            var posting_list = [];
+            for (const post of cat.postings) {
+
+                if(post.title.toLowerCase().includes(query)) {
+                    posting_list.push(post);
+                };
+            };
+            cat.postings = posting_list;
+        };
+
+
+        //render list view
+        res.render("list-posting", {
+            keyword: "category",
+            title: `${current_section.name}`,
+            category_list: current_section.categories,
+            section: current_section,
+            region: result,
+            query: query,
+        });
+    });
+};
+
 //Display category create for on GET
 exports.category_create_get  = (req,res,next) => {
     Region.find({}, "name")
