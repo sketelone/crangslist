@@ -4,12 +4,12 @@ const Section = require("../models/section");
 const Region = require("../models/region");
 const {body, validationResult} = require("express-validator");
 
-//Display list of all categories
+//Display list of all categories (archaic?)
 exports.category_list = (req,res,next) => {
     Region.findOne({alias: req.params.region})
     .populate({
         path: "sections", 
-        populate: {path: "categories"}
+        populate: {path: "categories" }
     })
     .exec( (err, result) => {
         if(err) {
@@ -25,6 +25,39 @@ exports.category_list = (req,res,next) => {
 
         //else render list view
         res.render("list", {
+            keyword: "category",
+            title: `${current_section.name}`,
+            category_list: current_section.categories,
+            section: current_section,
+            region: result,
+        });
+    });
+};
+
+//Display all postings in category
+exports.category_all = (req,res,next) => {
+    Region.findOne({alias: req.params.region})
+    .populate({
+        path: "sections", 
+        populate: {
+            path: "categories",
+            populate: { path: "postings",}
+        },
+    })
+    .exec( (err, result) => {
+        if(err) {
+            return next(err)
+        }
+        //match section using name in URL
+        var name = req.params.section.replace(/-/g, ' ').replace(/_/g, '/');
+        for (const section of result.sections) {
+            if(section.name == name) {
+                var current_section = section;
+            };
+        };
+
+        //render list view
+        res.render("list-posting", {
             keyword: "category",
             title: `${current_section.name}`,
             category_list: current_section.categories,

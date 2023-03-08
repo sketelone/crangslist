@@ -47,7 +47,7 @@ router.post('/:region/delete', region_controller.region_delete_post);
 
 ///SECTION ROUTES///
 /* GET request to see section info */
-router.get('/:region/:section', category_controller.category_list);
+router.get('/:region/:section', category_controller.category_all);
 
 //GET request to update section
 router.get('/:region/:section/update', section_controller.section_update_get);
